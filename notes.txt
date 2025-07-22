@@ -1,0 +1,28 @@
+1. set up project.
+2. set up frontend in react format.
+3. created mongodb atlas database
+4. settep up login, signup and forgt password components.
+5. setted up routes inside shared/routes/router.js
+6. used router outlet inside auth/layouts/AuthLayout.jsx
+7. used RouterProvider inside app.jsx 
+8. used react router form and yup for form handling and validation purposes.
+9. created schemas for validation
+10. toggled view/hide password using useState hook.
+11. setted up backend
+12. created userModel, authRoute and authController inside express backend
+13. set up cookie based authentication inside fronend and backend
+14. setup axios for request management
+15. setted up authService and redux for global state management
+16. created store inside app and authSlice inside auth 
+17. performed logged in sgnup using authservice and asyncThunk functions inside authSlice
+18. created a fetchCurrentUser function to fetch current user after login and on page load 
+19. because on page load states get destroyed so need to keep track whether user is logged in or not
+20. for keep tracking of that and verifying cookie throught backend using fetchCurrentUser function
+21. I created protected route and public route wrappers
+22. protected route wrpper: User can't access home page until login
+23. public route wrapper: if user is logged in then he cant access login, sign in and forgot password routes
+24. created middleware to verify jwt token of the logged in user in backend
+25. also created a new route auth/me to verify current user
+26. set jwt and cookie expiration based on remember me
+27. Implemented forgot password and reset password functionality
+28. sent email to user with a unique token to reset their password

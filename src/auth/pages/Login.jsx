@@ -1,12 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { loginSchema } from "../../shared/validators/loginSchema";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { getCurrentUser, loginUser } from "../authSlice";
 
 export const Login = () => {
 
     const [showPassword, setShowPassword] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handlePasswordToggle = ()=>{
         console.log("here");
@@ -16,14 +21,32 @@ export const Login = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting }
+        formState: { errors, isSubmitting },
+        reset
     } = useForm({
         resolver: yupResolver(loginSchema),
         // mode: "onTouched"
     });
 
     const onSubmit = async (data) => {
-        console.log(data);
+        try{
+            const res = await dispatch(loginUser(data)).unwrap();
+            console.log("login response:", res);
+            if(res.success){
+                console.log("Login successful:");
+                const userRes = await dispatch(getCurrentUser()).unwrap();
+                console.log("Current user response:", userRes);
+                if(userRes.success){
+                    toast.success(res.message || "Login Successful 🎉");
+                    navigate("/home");
+                }
+            }            
+        }
+        catch(error){
+            console.error("Error during login:", error);
+            toast.error(error || "An error occurred during login. Please try again.");
+            reset();
+        }
     };
 
     return (

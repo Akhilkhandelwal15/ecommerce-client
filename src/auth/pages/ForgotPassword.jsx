@@ -1,19 +1,35 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { use } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink } from "react-router-dom";
 import { forgotPasswordSchema } from "../../shared/validators/forgotpsswordSchema";
+import { useDispatch } from "react-redux";
+import { sendResetPasswordLink } from "../authSlice";
+import { toast } from "react-toastify";
 
 export const ForgotPassword = () => {
+    const dispatch = useDispatch();
 
     const onSubmit = async(data)=>{
-        console.log(data);
+        try{
+            const res = await dispatch(sendResetPasswordLink(data)).unwrap();
+            console.log("res:", res);
+            if(res.success){
+                toast.success(res.message || "Reset password link sent successfully!");
+                reset();
+            }
+        }
+        catch(error){
+            console.error("Error occured:", error);
+            toast.error(error || "An error occurred. Please try again.");
+            reset();
+        }
     }
 
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
+        reset,
     } = useForm({
         resolver: yupResolver(forgotPasswordSchema),
         mode: "onTouched"
