@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { resetPasswordSchema } from "../../shared/validators/resetPasswordSchema";
+import { resetPasswordSchema } from "../../shared/validators/resetPasswordSchema.js";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";

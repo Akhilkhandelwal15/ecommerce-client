@@ -5,14 +5,15 @@ import { ToastContainer } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getCurrentUser } from './auth/authSlice.js';
+import AuthLoader from './auth/components/AuthLoader.jsx';
 
 function App() {
   const dispatch = useDispatch();
 
-  useEffect(()=>{
-    // console.log("get current user");
-      dispatch(getCurrentUser());
-  },[dispatch]);
+  // useEffect(()=>{
+  //   // console.log("get current user");
+  //     dispatch(getCurrentUser());
+  // },[dispatch]);
 
   return (
     <>
@@ -27,7 +28,9 @@ function App() {
         pauseOnHover
         theme="light"
       />
-     <RouterProvider router={router} />
+      <AuthLoader>
+        <RouterProvider router={router} />
+      </AuthLoader>
     </>
   )
 }

@@ -5,7 +5,7 @@ import { loginSchema } from "../../shared/validators/loginSchema";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { getCurrentUser, loginUser } from "../authSlice";
+import { getCurrentUser, loginUser, resetAuthState } from "../authSlice";
 
 export const Login = () => {
 
@@ -30,6 +30,7 @@ export const Login = () => {
 
     const onSubmit = async (data) => {
         try{
+            dispatch(resetAuthState());
             const res = await dispatch(loginUser(data)).unwrap();
             console.log("login response:", res);
             if(res.success){
@@ -38,7 +39,12 @@ export const Login = () => {
                 console.log("Current user response:", userRes);
                 if(userRes.success){
                     toast.success(res.message || "Login Successful 🎉");
-                    navigate("/home");
+                    if(userRes.user.role === "user"){
+                        navigate("/home");
+                    }
+                    else if(userRes.user.role === "admin" || userRes.user.role === "superadmin"){
+                        navigate("/admin/dashboard");
+                    }
                 }
             }            
         }

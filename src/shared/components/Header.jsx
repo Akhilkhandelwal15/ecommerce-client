@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../../auth/authSlice";
+import { logoutUser, resetAuthState } from "../../auth/authSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +11,7 @@ export const Header = () => {
    const handleLogout = async()=>{
       try{
          const res = await dispatch(logoutUser()).unwrap();
+         dispatch(resetAuthState());
          if(res.success){
             toast.success(res.message || "User Logged out succesfully!")
          }
@@ -91,7 +92,7 @@ export const Header = () => {
                   </a>
                 </div>
                 <div className="ms-6 text-center">
-                  <a href="#" className="text-reset">
+                  <button className="btn p-0 border-0 bg-transparent text-reset">
                      {isAuthenticated ? (
                         <div className="lh-1" onClick={handleLogout}>
                            <div className="mb-2">
@@ -107,7 +108,7 @@ export const Header = () => {
                            <p className="mb-0 d-none d-xl-block small">Sign In</p>
                         </div>
                      )}
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

@@ -26,3 +26,9 @@
 26. set jwt and cookie expiration based on remember me
 27. Implemented forgot password and reset password functionality
 28. sent email to user with a unique token to reset their password
+29. added authorization
+30. added roles as "user", "admin" and "superadmin".
+31. added middleware for verify token and authorize routes.
+32. created add user functionality for admin.
+33. protected routes.
+34. added a wrapper(AuthLoder) on router for authorization purposes. 

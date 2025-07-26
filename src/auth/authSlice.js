@@ -7,7 +7,9 @@ const initialState = {
     isSuccess: false,
     isError: false,
     message: "",
-    isAuthenticated: false
+    isAuthenticated: false,
+    role: null,
+    isAuthChecked: false
 }
 
 export const registerUser = createAsyncThunk(
@@ -121,6 +123,9 @@ const authSlice = createSlice({
             state.isSuccess = false;
             state.isError = false;
             state.message = "";
+            // state.isAuthChecked = false; // intentionally
+            state.isAuthenticated = false;
+            state.role = null;
         }
     },
     extraReducers: (builder) =>{
@@ -135,6 +140,8 @@ const authSlice = createSlice({
             state.user = action.payload.user;
             state.message = "User data fetched successfully!";
             state.isAuthenticated = true;
+            state.role = action.payload.user.role;
+            state.isAuthChecked = true;
         })
         .addCase(getCurrentUser.rejected, (state, action)=>{
             state.isLoading = false;
@@ -142,6 +149,8 @@ const authSlice = createSlice({
             state.message = action.payload || "Failed to fetch user data";
             state.isAuthenticated = false;
             state.user = null;
+            state.role = null;
+            state.isAuthChecked = true;
         })
 
         .addCase(logoutUser.pending, (state)=>{
@@ -153,11 +162,13 @@ const authSlice = createSlice({
             state.user = null;
             state.message = "Logout successful!";
             state.isAuthenticated = false;
+            state.isAuthChecked = true;
         })
         .addCase(logoutUser.rejected, (state, action)=>{
             state.isLoading = false;
             state.isError = true;
             state.message = action.payload || "Logout failed";
+            state.isAuthChecked = true;
         });
     }
 });
