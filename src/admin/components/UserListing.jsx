@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserThunk } from "../slices/adminUserSlice";
 import { ClipLoader } from "react-spinners";
@@ -7,6 +7,10 @@ import { toast } from "react-toastify";
 export const UserListing = ()=>{
 	const dispatch = useDispatch();
 	const {userList, loading, error} = useSelector((state)=> state.adminUser);
+	const [searchTerm, setSearchTerm] = useState("");
+	const [filteredUsers, setFilteredUsers] = useState([]);
+	const debounceRef = useRef(null);
+
 	useEffect(()=>{
 		dispatch(fetchUserThunk());
 	}, [dispatch]);
@@ -16,6 +20,43 @@ export const UserListing = ()=>{
 			toast.error(error);
 		}
 	}, [error]);
+
+	useEffect(()=>{
+		const term = searchTerm.toLowerCase().trim();
+		if(term===""){
+			setFilteredUsers(userList);
+			return;
+		}
+
+		setFilteredUsers(
+			userList.filter((user)=>{
+				return user.email.toLowerCase().includes(term);
+			})
+		);
+
+	}, [userList, searchTerm]);
+
+	// handle search with debouncing
+	const handleSearch = (event)=>{
+		const value = event.target.value;
+		if(debounceRef.current){
+			clearTimeout(debounceRef.current);
+		}
+
+		debounceRef.current = setTimeout(() => {
+			setSearchTerm(value);
+			debounceRef.current = null;
+		}, 350);
+	}
+
+	// Cleanup pending debounce on unmount
+	useEffect(() => {
+		return () => {
+			if(debounceRef.current){
+				clearTimeout(debounceRef.current);
+			}
+		};
+	}, []);
 	
 	if(loading){
 		return (
@@ -51,7 +92,7 @@ export const UserListing = ()=>{
 										<div className="col-md-4 col-12">
 											<form className="d-flex" role="search">
 												<label htmlFor="searchCustomers" className="visually-hidden">Search Users</label>
-												<input className="form-control" type="search" id="searchCustomers" placeholder="Search Users" aria-label="Search" />
+												<input className="form-control" type="search" id="searchCustomers" placeholder="Search Users based on email" aria-label="Search" onChange={handleSearch} />
 											</form>
 										</div>
 									</div>
@@ -67,6 +108,7 @@ export const UserListing = ()=>{
 															<label className="form-check-label" htmlFor="checkAll"></label>
 														</div>
 													</th>
+													<th>S.N.</th>
 													<th>Name</th>
 													<th>Email</th>
 													<th>Created On</th>
@@ -76,7 +118,7 @@ export const UserListing = ()=>{
 												</tr>
 											</thead>
 											<tbody>
-												{userList.map((user)=>{
+												{filteredUsers.map((user, index)=>{
 													return (
 													<tr key={user._id}>
 														<td>
@@ -85,7 +127,7 @@ export const UserListing = ()=>{
 																<label className="form-check-label" htmlFor="customerOne"></label>
 															</div>
 														</td>
-
+														<td>{index+1}</td>
 														<td>
 															<div className="d-flex align-items-center">
 																<img src="../assets/images/avatar/avatar-1.jpg" alt="" className="avatar avatar-xs rounded-circle" />
